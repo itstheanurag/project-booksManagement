@@ -9,3 +9,8 @@ const { validateAuthor, validate } = require('../Validations/userValidations')
 
 router.post('/register', validateAuthor,validate, creatUser )
 router.post('/login',  loginUser )
+
+
+
+
+module.exports = router
