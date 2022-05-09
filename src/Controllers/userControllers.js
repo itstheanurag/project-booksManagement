@@ -46,12 +46,12 @@ const loginUser = async (req, res) => {
 
     if (!email) {
       found;
-      return sendError(res, "email must be present ", 400);
+      return res.status(400).send({status : false, message : "email is required"});
     }
 
     if (!password) {
-      found;
-      return sendError(res, "password must be present ", 400);
+      found;s
+      return res.status(400).send({status : false, message : "password is required"});
     }
 
     let validateEmail = emailValidator.validate(email);
@@ -61,10 +61,10 @@ const loginUser = async (req, res) => {
     }
 
     let findUser = await user.findOne({ email });
-    if (!findUser) return sendError(res, "No user found", 404);
+    if (!findUser) return res.status(404).send({status : false, message : "no user with this email exists"});
 
     let verifyUser = await user.findOne({ email: email, password: password });
-    if (!verifyUser) return sendError(res, "Password is wrong", 400);
+    if (!verifyUser) return res.status(400).send({status : false, message : "credentials are wrong"});
 
     let token = jwt.sign({ userId: findUser._id }, secretKey, {
       expiresIn: "2d",
