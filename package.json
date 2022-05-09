@@ -1,0 +1,26 @@
+{
+  "name": "project-booksmanagementgroupx",
+  "version": "1.0.0",
+  "description": "Backend cohort Mar22-Jul22",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itstheanurag/project-booksManagementGroupX.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/itstheanurag/project-booksManagementGroupX/issues"
+  },
+  "homepage": "https://github.com/itstheanurag/project-booksManagementGroupX#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "express-validator": "^6.14.0",
+    "mongoose": "^6.3.2",
+    "nodemon": "^2.0.16"
+  }
+}
