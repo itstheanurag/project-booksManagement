@@ -1,12 +1,12 @@
-const user = require("../Models/userModel");
+const user = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const emailValidator = require("email-validator");
-const secretKey = "game of code";
+const secretKey = "Gr34t mind5 think 4like";
 
 const creatUser = async (req, res) => {
   try {
     const userData = req.body;
-    const { title, name } = userData;
+    const { title, name, email, phone } = userData;
 
     if (!title) {
       return sendError(
@@ -19,19 +19,24 @@ const creatUser = async (req, res) => {
     let namePattern = /^[a-z]((?![? .,'-]$)[ .]?[a-z]){3,12}$/gi;
 
     if (!name.match(namePattern)) {
-      return sendError(res, "this is not a valid name", 400);
+      return res.status(400).send({status : false, message : "This is not a valid name"})
     }
 
-    let finduser = await user.findOne(data);
+    let finduser = await user.findOne(email);
 
     if (finduser) {
-      return sendError(res, "an user with this details already exists", 400);
+      return res.status(400).send({status : false, message : "this email is already being used"})
     }
 
-    let createUser = await user.create(data);
-    return res.status(201).send({ status: true,message:"registration successfull" ,data: createUser });
+    let checkPhone = await user.findOne(phone)
+    if (checkPhone) {
+        return res.status(400).send({status : false, message : "this phone number is already being used"})
+      }
+
+    let createUser = await user.create(userData);
+    return res.status(201).send({ status: true, message:"registration successfull" , data: createUser });
   } catch (err) {
-    res.status(500).send({ status: false, err: err.msg });
+    res.status(500).send({ status: false, err: err.message });
   }
 };
 
@@ -41,12 +46,12 @@ const loginUser = async (req, res) => {
 
     if (!email) {
       found;
-      return sendError(res, "email must be present ", 400);
+      return res.status(400).send({status : false, message : "email is required"});
     }
 
     if (!password) {
-      found;
-      return sendError(res, "password must be present ", 400);
+      found;s
+      return res.status(400).send({status : false, message : "password is required"});
     }
 
     let validateEmail = emailValidator.validate(email);
@@ -56,10 +61,10 @@ const loginUser = async (req, res) => {
     }
 
     let findUser = await user.findOne({ email });
-    if (!findUser) return sendError(res, "No user found", 404);
+    if (!findUser) return res.status(404).send({status : false, message : "no user with this email exists"});
 
     let verifyUser = await user.findOne({ email: email, password: password });
-    if (!verifyUser) return sendError(res, "Password is wrong", 400);
+    if (!verifyUser) return res.status(400).send({status : false, message : "credentials are wrong"});
 
     let token = jwt.sign({ userId: findUser._id }, secretKey, {
       expiresIn: "2d",
