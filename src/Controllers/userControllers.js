@@ -6,7 +6,7 @@ const secretKey = "Thsiuhfidshfs9fjWHERIHWE9E0U";
 const creatUser = async (req, res) => {
   try {
     const userData = req.body;
-    const { title, name } = userData;
+    const { title, name, email, phone } = userData;
 
     if (!title) {
       return sendError(
@@ -19,19 +19,24 @@ const creatUser = async (req, res) => {
     let namePattern = /^[a-z]((?![? .,'-]$)[ .]?[a-z]){3,12}$/gi;
 
     if (!name.match(namePattern)) {
-      return sendError(res, "this is not a valid name", 400);
+      return res.status(400).send({status : false, message : "This is not a valid name"})
     }
 
-    let finduser = await user.findOne(data);
+    let finduser = await user.findOne(email);
 
     if (finduser) {
-      return sendError(res, "an user with this details already exists", 400);
+      return res.status(400).send({status : false, message : "this email is already being used"})
     }
 
-    let createUser = await user.create(data);
-    return res.status(201).send({ status: true,message:"registration successfull" ,data: createUser });
+    let checkPhone = await user.findOne(phone)
+    if (checkPhone) {
+        return res.status(400).send({status : false, message : "this phone number is already being used"})
+      }
+
+    let createUser = await user.create(userData);
+    return res.status(201).send({ status: true, message:"registration successfull" , data: createUser });
   } catch (err) {
-    res.status(500).send({ status: false, err: err.msg });
+    res.status(500).send({ status: false, err: err.message });
   }
 };
 

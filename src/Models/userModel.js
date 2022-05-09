@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema ({
         password: {type: String, required : true, minLen : 8, maxLen : 15},
         address: {
           street: {type : String},
-          city: {Type : String},
+          city: {type : String},
           pincode: {type : String}
         }
      
