@@ -1,7 +1,7 @@
 const user = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const emailValidator = require("email-validator");
-const secretKey = "game of code";
+const secretKey = "Thsiuhfidshfs9fjWHERIHWE9E0U";
 
 const creatUser = async (req, res) => {
   try {
