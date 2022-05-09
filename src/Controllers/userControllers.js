@@ -1,4 +1,4 @@
-const user = require("../Models/userModel");
+const user = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const emailValidator = require("email-validator");
 const secretKey = "game of code";
