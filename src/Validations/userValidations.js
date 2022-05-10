@@ -26,7 +26,7 @@ exports.validateAuthor = [check('title')
     .isLength({ min: 8, max: 15})
     .withMessage(' Password must be within 8 to 15 characters long')]
 
-exports.validate = function (req,res,next){
+exports.authorValidated = function (req,res,next){
         const error = validationResult(req).array()
         if(!error.length) return next()
 

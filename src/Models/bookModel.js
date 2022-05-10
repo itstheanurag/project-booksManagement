@@ -32,7 +32,7 @@ const bookSchema = new mongoose.SChema({
     reviews : {
         type : Number,
         default: 0,
-        comment : Number
+       // comment : holds the number of the reviews
     },
     deletedAt : {
         type : Date
@@ -44,7 +44,7 @@ const bookSchema = new mongoose.SChema({
     releasedAt : {
         type : Date,
         required : true,
-        format : "YYYY-MM-DD"
+        
     }
 },{timestamps : true})
 
