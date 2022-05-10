@@ -22,13 +22,13 @@ const creatUser = async (req, res) => {
       return res.status(400).send({status : false, message : "This is not a valid name"})
     }
 
-    let finduser = await user.findOne(email);
+    let finduser = await user.findOne({email});
 
     if (finduser) {
       return res.status(400).send({status : false, message : "this email is already being used"})
     }
 
-    let checkPhone = await user.findOne(phone)
+    let checkPhone = await user.findOne({phone})
     if (checkPhone) {
         return res.status(400).send({status : false, message : "this phone number is already being used"})
       }
@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
     if (!findUser) return res.status(404).send({status : false, message : "no user with this email exists"});
 
     let verifyUser = await user.findOne({ email: email, password: password });
-    if (!verifyUser) return res.status(400).send({status : false, message : "credentials are wrong"});
+    if (!verifyUser) return res.status(400).send({status : false, message : "password are wrong"});
 
     let token = jwt.sign({ userId: findUser._id }, secretKey, {
       expiresIn: "2d",
