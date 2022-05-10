@@ -8,7 +8,29 @@ const review = require('../models/reviewModel')
 const createBook = async (req,res)=>{
     try{
        let bookData = req.body
-       let {title, userId, ISBN} = bookData
+       let {title, userId, ISBN, category, subcategory, excerpt} = bookData
+       
+       if(title){
+           let titlePattern = /^[a-z]((?![? .,'-]$)[ .]?[a-z]){4,70}$/gi
+           if(!title.match(titlePattern)){
+            return res.status(400).send({status : false, message: "Please provide a valid title"})
+           }
+       }else{
+           return res.status(400).send({status : false, message : "Title is a required field"})
+       }
+
+       let isUniqueTitle = await book.findOne({title : title})
+       if(isUniqueTitle){
+        return res.status(400).send({status : false, message: "this title is being used"})
+       }
+
+       if(excerpt){
+        if(excerpt.trim().length === 0){
+            return res.status(400).send({status : false, message : "excerpt can not be empty"})
+        }
+    }else{
+        return res.status(400).send({status : false, message : "excerpt is a required field"})
+    }
 
        if(userId){
            let validUserId = mongoose.isValidObjectId(userId)
@@ -16,13 +38,50 @@ const createBook = async (req,res)=>{
                return res.status(400).send({status : false, message : "This is not a valid user id"})
            }
 
-           let findUser = await user.findOne(userId)
+           let findUser = await user.findOne({userId})
            if(!findUser){
             return res.status(404).send({status : false, message : "User with this Id does not exist"})
            }
+       }else{
+        return res.status(400).send({status : false, message : "userId is a required field"})
        }
 
-       let findBook = await book.findOne(title, ISBN, authorId)
+       if(ISBN){
+           let isbnPattern = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/g
+
+           if(!ISBN.match(isbnPattern)){
+               return res.status(400).send({status : false, message: "Please provide a valid isbn number"})
+           }
+       } else{
+        return res.status(400).send({status : false, message: "isbn Number is a required field"})
+       }
+
+       let isUniqueISBN = await book.findOne({ISBN : ISBN})
+
+       if(isUniqueISBN){
+        return res.status(400).send({status : false, message: "This ISBN is already being used"})
+       }
+
+       if(!category){
+        return res.status(400).send({status : false, message: "category is a required field"})
+       }else{
+           if(category.trim().length === 0){
+            return res.status(400).send({status : false, message: "category can not be empty"})
+           }
+       }
+
+       if(subcategory){
+           if(Array.isArray(subcategory)){
+           let uniqueSub = [...new Set(subcategory)]
+           bookData.subcategory = uniqueSub
+           }
+       }else{
+        return res.status(400).send({status : false, message: "subcategory is a required field"})
+       }
+
+    
+       let findBook = await book.findOne({title, ISBN, userId})
+
        if(findBook){
         return res.status(400).send({status : false, message : "A book with this details already exists"})
        }else{
@@ -55,20 +114,20 @@ const getBook = async (req,res)=>{
                 return res.status(400).send({status : false,message : "this is not a valid user Id"})
             }
 
-            let findbyUserId = await book.findOne(userId)
+            let findbyUserId = await book.findOne({userId})
             if(!findbyUserId){
                 return res.status(404).send({status : false,message : "no books with this userId exists"})
             }
         }
 
         if(category){
-            let findbyCategory = await book.findOne(category)
+            let findbyCategory = await book.findOne({category})
             if(!findbyCategory){
                 return res.status(404).send({status : false,message : "no books with this category exists"})
             }
         }
         if(subcategory){
-            let findbysubcategory = await book.findOne(subcategory)
+            let findbysubcategory = await book.findOne({subcategory})
             if(!findbysubcategory){
                 return res.status(404).send({status : false,message : "no books with this subcategory exists"})
             }
@@ -103,7 +162,7 @@ const bybookId = async (req,res)=>{
             return res.status(400).send({status : false, message : "Book Id must be present in order to search it"})
         }
 
-        let findBook = await book.findOne(bookId)
+        let findBook = await book.findOne({_id : bookId})
 
         if(!findBook){
             return res.status(404).send({status : false, message : "No document exists with this book Id"})
@@ -113,7 +172,7 @@ const bybookId = async (req,res)=>{
             return res.status(404).send({status : false, message : "This book has been deleted by the user"})
         }
 
-        let findReview = await review.find({ISBN : findBook.ISBN})
+        let findReview = await review.find({bookId : findBook._id})
         
         let details = {
             _id : findBook._id,
@@ -213,7 +272,7 @@ const deleteById = async (req,res)=>{
         }
 
         if(findOne.isDeleted === true){
-            return res.status(401).send({status : false, message : "This book has been already deleted"})
+            return res.status(401).send({status : false, message : "This book has been already already deleted"})
         }
 
         let deleteBook = await book.findOneAndUpdate({_id : bookId, userId : userId}, {$set :{isDeleted : true, deletedAt : Date.now()}}, {new : true, upsert : true})
