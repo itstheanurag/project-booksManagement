@@ -6,19 +6,13 @@ exports.validateAuthor = [check('title')
     .isEmpty().withMessage('title is Missing')
     .isLength({ min: 2, max: 4 })
     .withMessage(' titile must be within 2 to 4 characters long').isIn(['Mr', 'Mrs', 'Miss']).withMessage('title must be Mr, Mrs, Miss'),
-    
-    check('name') 
-    .trim()
-    .not()
-    .isEmpty().withMessage('First Name is Missing')
-    .isLength({ min: 3, max: 12 })
-    .withMessage('Invalid First Name, Name must be within 3 to 12 characters long'),
 
     check('phone')
     .trim()
     .not()
     .isEmpty().withMessage('Phone number is missing')
-    .isLength({equal : 10}),
+    .matches('^[6789][0-9]{9}$')
+    .withMessage('Not a valid phone number'),
 
     check('email')
     .normalizeEmail()

@@ -45,19 +45,17 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email) {
-      found;
       return res.status(400).send({status : false, message : "email is required"});
     }
 
     if (!password) {
-      found;s
       return res.status(400).send({status : false, message : "password is required"});
     }
 
     let validateEmail = emailValidator.validate(email);
 
     if (!validateEmail) {
-      return sendError(res, "email is not valid", 400);
+      return res.status(400).send({status : false, message : "this is not a valid email"});
     }
 
     let findUser = await user.findOne({ email });
@@ -66,7 +64,7 @@ const loginUser = async (req, res) => {
     let verifyUser = await user.findOne({ email: email, password: password });
     if (!verifyUser) return res.status(400).send({status : false, message : "credentials are wrong"});
 
-    let token = jwt.sign({ userId: findUser._id }, secretKey, {
+    let token = jwt.sign({ userId: verifyUser._id }, secretKey, {
       expiresIn: "2d",
     });
 
