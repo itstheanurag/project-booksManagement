@@ -21,7 +21,7 @@ const authenticate = (req, res, next)=>{
         return res.status(500).send({status : false, message : err.message})
     }
 }
-
+//=======================
 const authorization = (req, res, next)=>{
     try{
         let token = req.Headers['x-auth-key']

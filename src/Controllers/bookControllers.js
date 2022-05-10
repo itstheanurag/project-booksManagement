@@ -43,7 +43,7 @@ const createBook = async (req,res)=>{
             return res.status(404).send({status : false, message : "User with this Id does not exist"})
            }
        }else{
-        return res.status(400).send({status : false, message : "userId is a required field"})
+        return res.status(404).send({status : false, message : "User Id is a required field"})
        }
 
        if(ISBN){
@@ -172,7 +172,7 @@ const bybookId = async (req,res)=>{
             return res.status(404).send({status : false, message : "This book has been deleted by the user"})
         }
 
-        let findReview = await review.find({bookId : findBook._id})
+        let findReview = await review.find({ISBN : findBook.ISBN})
         
         let details = {
             _id : findBook._id,
@@ -272,7 +272,7 @@ const deleteById = async (req,res)=>{
         }
 
         if(findOne.isDeleted === true){
-            return res.status(401).send({status : false, message : "This book has been already already deleted"})
+            return res.status(401).send({status : false, message : "This book has been already deleted"})
         }
 
         let deleteBook = await book.findOneAndUpdate({_id : bookId, userId : userId}, {$set :{isDeleted : true, deletedAt : Date.now()}}, {new : true, upsert : true})
