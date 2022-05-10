@@ -1,16 +1,16 @@
 const express = require('express')
-const { getBook, createBook, bybookId } = require('../controllers/bookControllers')
+const { getBook, createBook, bybookId, updateBook, deleteById } = require('../controllers/bookControllers')
 const { creatUser, loginUser } = require('../controllers/userControllers')
 
 const router = express.Router()
-const { validateAuthor, validate, authorValidated } = require('../validations/userValidations')
+const { validateAuthor, authorValidated } = require('../validations/userValidations')
 
-router.post("/register",  creatUser);
+router.post("/register", validateAuthor, authorValidated, creatUser);
 router.post("/login", loginUser);
 //=========================
 router.post("/books",  createBook);
 router.get("/books", getBook);
-router.get("/books/:bookId", getByBookId);
+router.get("/books/:bookId", bybookId);
 router.put("/books/:bookId", updateBook);
 router.delete("/books/:bookId", deleteById);
 //================================
