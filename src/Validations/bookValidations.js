@@ -3,7 +3,7 @@ const {check, validationResult} = require("express-validator")
 exports.validateBook = [check('title')
     .trim()
     .not()
-    .isEmpty().withMessage('title is Missing').exists(),
+    .isEmpty().withMessage('title is Missing'),
 
     check('excerpt')
     .trim()
@@ -19,7 +19,9 @@ exports.validateBook = [check('title')
     check('ISBN')
     .trim()
     .not()
-    .isEmpty().withMessage('ISBN is Missing'),
+    .isEmpty().withMessage('ISBN is Missing')
+    .matches('^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$')
+    .withMessage('ISBN is not valid'),
     
     check('category')
     .trim()
@@ -43,7 +45,7 @@ exports.validateBook = [check('title')
     .isEmpty()
     .withMessage('subcategory is missing')
     .isNumeric()
-    .withMessage('only Numeric valiue allowed'),
+    .withMessage('only Numeric value allowed'),
 
     check('releasedAt')
     .trim()

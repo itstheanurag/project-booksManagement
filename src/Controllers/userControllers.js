@@ -16,7 +16,7 @@ const creatUser = async (req, res) => {
       );
     }
 
-    let namePattern = /^[a-z]((?![? .,'-]$)[ .]?[a-z]){3,12}$/gi;
+    let namePattern = /^[a-z]((?![? .,'-]$)[ .]?[a-z]){2,24}$/gi;
 
     if (!name.match(namePattern)) {
       return res.status(400).send({status : false, message : "This is not a valid name"})
@@ -39,6 +39,8 @@ const creatUser = async (req, res) => {
     res.status(500).send({ status: false, err: err.message });
   }
 };
+
+
 
 const loginUser = async (req, res) => {
   try {

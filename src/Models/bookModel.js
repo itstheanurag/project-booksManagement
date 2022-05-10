@@ -26,7 +26,7 @@ const bookSchema = new mongoose.SChema({
         required : true
     },
     subcategory : {
-        type : String,
+        type : [String],
         required : true
     },
     reviews : {
@@ -43,8 +43,7 @@ const bookSchema = new mongoose.SChema({
     },
     releasedAt : {
         type : Date,
-        required : true,
-        
+        required : true,    
     }
 },{timestamps : true})
 
