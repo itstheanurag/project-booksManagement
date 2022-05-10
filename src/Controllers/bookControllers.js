@@ -3,61 +3,97 @@ const mongoose = require("mongoose");
 const user = require("../models/userModel");
 const review = require("../models/reviewModel");
 
-const createBook = async (req, res) => {
-  try {
-    let bookData = req.body;
-    let { title, userId, ISBN, subcategory, category, reviews } = bookData;
 
-    if (!subcategory)
-      return res
-        .status(400)
-        .send({ status: false, message: "subcategory is required" });
 
-    if (!category)
-      return res
-        .status(400)
-        .send({ status: false, message: "category is required" });
+
+const createBook = async (req,res)=>{
+  try{
+     let bookData = req.body
+     let {title, userId, ISBN, category, subcategory, excerpt} = bookData
+     
+     if(title){
+         let titlePattern = /^[a-z]((?![? .,'-]$)[ .]?[a-z]){4,70}$/gi
+         if(!title.match(titlePattern)){
+          return res.status(400).send({status : false, message: "Please provide a valid title"})
+         }
+     }else{
+         return res.status(400).send({status : false, message : "Title is a required field"})
+     }
+
+     let isUniqueTitle = await book.findOne({title : title})
+     if(isUniqueTitle){
+      return res.status(400).send({status : false, message: "this title is being used"})
+     }
+
+     if(!excerpt){
+      let excerptPattern = /^[a-z0-9]((?![? .,'-]$)[ .]?[a-z]){4,150}$/gi
+      if(!title.match(excerptPattern)){
+       return res.status(400).send({status : false, message: "Please provide a valid excerpt"})
+      }
+  }else{
+      return res.status(400).send({status : false, message : "excerpt is a required field"})
+  }
+
+     if(userId){
+         let validUserId = mongoose.isValidObjectId(userId)
+         if(!validUserId){
+             return res.status(400).send({status : false, message : "This is not a valid user id"})
+         }
+
+         let findUser = await user.findOne({userId})
+         if(!findUser){
+          return res.status(404).send({status : false, message : "User with this Id does not exist"})
+         }
+     }
+
+     if(ISBN){
+         let isbnPattern = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/g
+
+         if(!ISBN.match(isbnPattern)){
+             return res.status(400).send({status : false, message: "Please provide a valid isbn number"})
+         }
+     } else{
+      return res.status(400).send({status : false, message: "isbn Number is a required field"})
+     }
+
+     let isUniqueISBN = await book.findOne({ISBN : ISBN})
+
+     if(isUniqueISBN){
+      return res.status(400).send({status : false, message: "This ISBN is already being used"})
+     }
+
+     if(!category){
+      return res.status(400).send({status : false, message: "category is a required field"})
+     }else{
+         if(category.trim().length === 0){
+          return res.status(400).send({status : false, message: "category can not be empty"})
+         }
+     }
+
+     if(subcategory){
+         if(Array.isArray(subcategory)){
+         let uniqueSub = [...new Set(subcategory)]
+         bookData.subcategory = uniqueSub
+         }
+     }else{
+      return res.status(400).send({status : false, message: "subcategory is a required field"})
+     }
 
   
+     let findBook = await book.findOne({title, ISBN, userId})
 
-    if (userId) {
-      let validUserId = mongoose.isValidObjectId(userId);
-      if (!validUserId) {
-        return res
-          .status(400)
-          .send({ status: false, message: "This is not a valid user id" });
-      }
+     if(findBook){
+      return res.status(400).send({status : false, message : "A book with this details already exists"})
+     }else{
+         let saveBook = await book.create(bookData)
+         return res.status(201).send({status : true, message : "you book has been saved", data : saveBook})
+     }
 
-      let findUser = await user.findOne({ userId });
-      if (!findUser) {
-        return res
-          .status(404)
-          .send({ status: false, message: "User with this Id does not exist" });
-      }
-    }
-
-    let findBook = await book.findOne({ title, ISBN, userId });
-    if (findBook) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "A book with this details already exists",
-        });
-    } else {
-      let saveBook = await book.create(bookData);
-      return res
-        .status(201)
-        .send({
-          status: true,
-          message: "you book has been saved",
-          data: saveBook,
-        });
-    }
-  } catch (err) {
-    return res.status(500).send({ status: false, message: err.message });
   }
-};
+  catch(err){
+      return res.status(500).send({status : false, message : err.message})
+  }
+}
 //===============================================================================================
 const getBook = async (req, res) => {
   try {
