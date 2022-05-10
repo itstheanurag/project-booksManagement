@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-const bookSchema = new mongoose.SChema({
+const bookSchema = new mongoose.Schema({
     title : {
         type : String,
         required : true,
@@ -43,7 +43,7 @@ const bookSchema = new mongoose.SChema({
     },
     releasedAt : {
         type : Date,
-        required : true,    
+       default: Date.now()   
     }
 },{timestamps : true})
 

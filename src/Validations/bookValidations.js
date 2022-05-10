@@ -20,42 +20,18 @@ exports.validateBook = [check('title')
     .trim()
     .not()
     .isEmpty().withMessage('ISBN is Missing')
-    .matches('^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$')
-    .withMessage('ISBN is not valid'),
+    .matches(/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/g),
     
-    check('category')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage('category is missing')
-    .isAlpha()
-    .withMessage('only alphabets allowed'),
 
-    check('subcategory')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage('subcategory is missing')
-    .isAlpha()
-    .withMessage('only alphabets allowed'),
 
-    check('reviews')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage('subcategory is missing')
-    .isNumeric()
-    .withMessage('only Numeric value allowed'),
 
-    check('releasedAt')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage('released date is missing')
+
+
 ]
 
 exports.bookValidated = function (req,res,next){
         const error = validationResult(req).array()
+        console.log(error)
         if(!error.length) return next()
 
         res.status(400).send({status : false, msg: error[0].msg})
