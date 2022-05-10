@@ -26,7 +26,24 @@ const createReview = async (req,res)=>{
             return res.status(400).send({status : false, message : 'This book has been deleted'})
          }
         
-        let {review, rating, reviewedBy} = data
+        
+        let details = {
+            booKId : req.params.booKId,
+            reviewedBy : data.reviewedBy,
+            reviewedAt : Date.now(),
+            ratings : data.rating,
+            review : data.review
+        }
+
+        let reviewCreated = await review.create(details)
+
+        if(reviewCreated){
+            await book.findOneAndUpdate({_id : bookId}, {$inc : {reviews : 1}}, {new : true, upsert : true})
+            
+            return res.status(201).send({status : true, message : "Review published", data :reviewCreated })
+        }
+
+        
     }
     catch(err){
         return res.status(500).send({status : false, message : err.message})
