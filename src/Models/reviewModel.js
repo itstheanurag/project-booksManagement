@@ -14,7 +14,7 @@ const reviewModel =  new mongoose.Schema({
     },
     
     reviewedAt: {
-        type :Date,   
+        type :Date,  
         default : Date.now()
     },
 
@@ -31,4 +31,4 @@ const reviewModel =  new mongoose.Schema({
         default: false},
   }, {timestamps : true})
 
-  module.exports = mongoose.model('Review', reviewModel)
+  module.exports = new mongoose.model('Review', reviewModel)
