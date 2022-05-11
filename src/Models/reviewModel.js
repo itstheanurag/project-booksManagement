@@ -5,6 +5,7 @@ const reviewModel =  new mongoose.Schema({
     bookId: {
         type: ObjectId,
         ref:'Book' , 
+        
     },
     reviewedBy: {
         type : String, 
@@ -13,7 +14,7 @@ const reviewModel =  new mongoose.Schema({
     },
     
     reviewedAt: {
-        type :Date, 
+        type :Date,   
         default : Date.now()
     },
 
