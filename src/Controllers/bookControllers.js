@@ -297,8 +297,7 @@ const updateBook = async (req, res) => {
                 .status(404)
                 .send({ status: false, message: "No book with this Id exists" });
         }
-
-        
+     
         if (checkBook.isDeleted) {
             return res
                 .status(404)
