@@ -1,7 +1,7 @@
 const review = require('../models/reviewModel')
 const mongoose = require("mongoose")
-const book = require("../Models/bookModel")
-const user = require("../Models/userModel")
+const book = require("../models/bookModel")
+const user = require("../models/userModel")
 
 const createReview = async (req,res)=>{
     try{
@@ -17,7 +17,7 @@ const createReview = async (req,res)=>{
             return res.status(400).send({status : false, message : 'this is not a valid book Id'})
          }
 
-         let findBook =  await book.findOne(bookId)
+         let findBook =  await book.findOne({bookId})
          if(!findBook){
             return res.status(400).send({status : false, message : 'no books with this Books id'})
          }
@@ -28,10 +28,10 @@ const createReview = async (req,res)=>{
         
         
         let details = {
-            booKId : req.params.booKId,
+            bookId : findBook._id,
             reviewedBy : data.reviewedBy,
             reviewedAt : Date.now(),
-            ratings : data.rating,
+            rating : data.rating,
             review : data.review
         }
 
@@ -75,7 +75,7 @@ const updateReview = async(req,res)=>{
            return res.status(400).send({status : false, message : 'this is not a valid review Id'})
         }
         
-        let findBook = await book.find(bookId)
+        let findBook = await book.find({bookId})
 
         if(!findBook){
             return res.status(404).send({status : false, message : "A book with this id does not exists"})
@@ -85,7 +85,7 @@ const updateReview = async(req,res)=>{
             return res.status(404).send({status : false, message : "This book has been deleted"})
         }
 
-        let findReview = await review.findOne(reviewId)
+        let findReview = await review.findOne({reviewId})
 
         if(!findReview){
             return res.status(404).send({status : false, message : "A review with this id does not exists"})
@@ -132,7 +132,7 @@ const deleteReviewById = async(req,res)=>{
            return res.status(400).send({status : false, message : 'this is not a valid review Id'})
         }
         
-        let findBook = await book.find(bookId)
+        let findBook = await book.find({bookId})
 
         if(!findBook){
             return res.status(404).send({status : false, message : "A book with this id does not exists"})
@@ -142,7 +142,7 @@ const deleteReviewById = async(req,res)=>{
             return res.status(404).send({status : false, message : "This book has been deleted"})
         }
 
-        let findReview = await review.findOne(reviewId)
+        let findReview = await review.findOne({reviewId})
 
         if(!findReview){
             return res.status(404).send({status : false, message : "A review with this id does not exists"})
