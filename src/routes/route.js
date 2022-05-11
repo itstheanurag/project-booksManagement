@@ -1,37 +1,21 @@
-const express = require("express");
-const { creatUser, loginUser } = require("../controllers/userControllers");
-const {
-  createBook,
-  getBook,
-  getByBookId,
-  updateBook,
-  deleteById,
-} = require("../controllers/bookControllers");
-const {
-  createReview,
-  updateReview,
-  deleteReviewById,
-} = require("../controllers/bookControllers");
-const router = express.Router();
-const {
-  validateAuthor,
-  validate,
-  authorValidated,
-} = require("../validations/userValidations");
-const {
-  validateBook,
-  bookValidated,
-} = require("../validations/bookValidations");
+const express = require('express')
+const { getBook, createBook, bybookId, updateBook, deleteById } = require('../controllers/bookControllers')
+const { creatUser, loginUser } = require('../controllers/userControllers')
 
-router.post("/register", creatUser);
+const router = express.Router()
+const { validateAuthor, authorValidated } = require('../validations/userValidations')
+
+router.post("/register", validateAuthor, authorValidated, creatUser);
 router.post("/login", loginUser);
 //=========================
-router.post("/books", bookValidated,validateBook,  createBook);
+router.post("/books",  createBook);
 router.get("/books", getBook);
-router.get("/books/:bookId", getByBookId);
+router.get("/books/:bookId", bybookId);
 router.put("/books/:bookId", updateBook);
 router.delete("/books/:bookId", deleteById);
 //================================
 // router.post("/books/:bookId/review", createReview);
 
-module.exports = router;
+
+
+module.exports = router
