@@ -3,8 +3,7 @@ const {check, validationResult} = require("express-validator")
 exports.validateReview = [check('bookId')
     .trim()
     .not()
-    .isEmpty().withMessage('bookId is Missing')
-    .isAlphanumeric().withMessage('bookId must be an alphanumberic value'),
+    .isEmpty().withMessage('bookId is Missing'),
 
     check('reviewedBy')
     .trim()
@@ -20,8 +19,7 @@ exports.validateReview = [check('bookId')
     .trim()
     .not()
     .isEmpty().withMessage('review is Missing'),
-   
-    
+
 ]
 
 exports.reviewValidated = function (req,res,next){

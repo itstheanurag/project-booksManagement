@@ -1,12 +1,14 @@
-const review = require('../models/reviewModel')
+const review = require("../models/reviewModel")
 const mongoose = require("mongoose")
-const book = require("../Models/bookModel")
-const user = require("../Models/userModel")
+const book = require("../models/bookModel")
+const user = require("../models/userModel")
 
 const createReview = async (req,res)=>{
     try{
          let bookId = req.params.bookId
          let data =  req.body
+
+         let {rating, review, reviewedBy}= data
 
          if(!bookId){
              return res.status(400).send({status : false, message : 'bookId is not present'})
@@ -17,7 +19,7 @@ const createReview = async (req,res)=>{
             return res.status(400).send({status : false, message : 'this is not a valid book Id'})
          }
 
-         let findBook =  await book.findOne(bookId)
+         let findBook =  await book.findOne({bookId})
          if(!findBook){
             return res.status(400).send({status : false, message : 'no books with this Books id'})
          }
@@ -25,14 +27,14 @@ const createReview = async (req,res)=>{
          if(findBook.isDeleted){
             return res.status(400).send({status : false, message : 'This book has been deleted'})
          }
-        
+
         
         let details = {
-            booKId : req.params.booKId,
-            reviewedBy : data.reviewedBy,
+            bookId : findBook._id,
+            reviewedBy : reviewedBy,
             reviewedAt : Date.now(),
-            ratings : data.rating,
-            review : data.review
+            rating : rating,
+            review : review
         }
 
         let reviewCreated = await review.create(details)
