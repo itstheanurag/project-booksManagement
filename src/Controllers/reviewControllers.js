@@ -8,8 +8,6 @@ const createReview = async (req,res)=>{
          let bookId = req.params.bookId
          let data =  req.body
 
-         
-
          if(!bookId){
              return res.status(400).send({status : false, message : 'bookId is not present'})
          }
@@ -57,8 +55,6 @@ const createReview = async (req,res)=>{
             return res.status(400).send({status : false, message : 'a review with this details already exists, please update it'})
         }
        
-
-
         let reviewCreated = await review.create(details)
         
         if(reviewCreated){

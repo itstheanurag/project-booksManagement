@@ -48,7 +48,7 @@ const createBook = async (req, res) => {
                     .send({ status: false, message: "This is not a valid user id" });
             }
 
-            let findUser = await user.findOne({ userId });
+            let findUser = await user.findOne({_id : userId });
             if (!findUser) {
                 return res
                     .status(404)
@@ -113,11 +113,9 @@ const createBook = async (req, res) => {
         }
 
         if (releasedAt) {
-            let datePattern = /^\d{4}-\d[1-12]-\d{2}$/g;
+            let datePattern = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/g;
             if (!releasedAt.match(datePattern)) {
-                return res
-                    .status(400)
-                    .send({ status: false, message: "Date format is not valid" });
+                return res.status(400).send({ status: false, message: "Date format is not valid" });
             }
         } else {
             return res
@@ -164,7 +162,7 @@ const getBook = async (req, res) => {
         }
 
         if (category) {
-            let findbyCategory = await book.findOne({ category });
+            let findbyCategory = await book.findOne({ category : category });
             if (!findbyCategory) {
                 return res.status(404).send({
                     status: false,
@@ -173,7 +171,7 @@ const getBook = async (req, res) => {
             }
         }
         if (subcategory) {
-            let findbysubcategory = await book.findOne({ subcategory });
+            let findbysubcategory = await book.findOne({ subcategory: subcategory });
             if (!findbysubcategory) {
                 return res.status(404).send({
                     status: false,
@@ -291,6 +289,22 @@ const updateBook = async (req, res) => {
                 message: "Book Id must be present in order to search it",
             });
         }
+
+        let checkBook = await book.findOne({_id : bookId})
+        
+        if (!checkBook) {
+            return res
+                .status(404)
+                .send({ status: false, message: "No book with this Id exists" });
+        }
+
+        
+        if (checkBook.isDeleted) {
+            return res
+                .status(404)
+                .send({ status: false, message: "this book has been deleted by you" });
+        }
+
         let data = req.body;
 
         let findBook = await book.findOneAndUpdate(
@@ -299,23 +313,12 @@ const updateBook = async (req, res) => {
             { new: true, upsert: true }
         );
 
-        if (!findBook) {
-            return res
-                .status(404)
-                .send({ status: false, message: "No book with this Id exists" });
-        }
-
-        if (findBook.isDeleted) {
-            return res
-                .status(404)
-                .send({ status: false, message: "this book has been deleted by you" });
-        } else {
             return res.status(200).send({
                 status: true,
                 message: "Updated successfully",
                 data: findBook,
             });
-        }
+        
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message });
     }
@@ -355,7 +358,7 @@ const deleteById = async (req, res) => {
             });
         }
 
-        let findOne = await book.findOne(bookId);
+        let findOne = await book.findOne({_id : bookId});
 
         if (!findOne) {
             return res.status(404).send({
