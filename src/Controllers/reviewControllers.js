@@ -7,7 +7,7 @@ const createReview = async (req,res)=>{
     try{
          let bookId = req.params.bookId
          let data =  req.body
-
+console.log(data)
          if(!bookId){
              return res.status(400).send({status : false, message : 'bookId is not present'})
          }
