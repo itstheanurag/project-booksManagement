@@ -9,15 +9,15 @@ const reviewModel =  new mongoose.Schema({
     },
     reviewedBy: {
         type : String, 
-         
         default: 'Guest', 
         trim : true
     },
+    
     reviewedAt: {
-        type :Date, 
-         
+        type :Date,   
         default : Date.now()
     },
+
     rating: {
         type :Number, 
         min : 1, 

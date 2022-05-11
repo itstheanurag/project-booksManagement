@@ -9,11 +9,7 @@ const creatUser = async (req, res) => {
     const { title, name, email, phone } = userData;
 
     if (!title) {
-      return sendError(
-        res,
-        "title is a required field and can not be empty",
-        400
-      );
+      return res.status(400).send({status : false, message : "Title must be present"});
     }
 
     let namePattern = /^[a-z]((?![? .,'-]$)[ .]?[a-z]){2,24}$/gi;
