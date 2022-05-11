@@ -243,7 +243,7 @@ const bybookId = async (req, res) => {
             });
         }
 
-        let findReview = await review.find({ bookId: findBook._id });
+        let findReview = await review.find({ bookId: findBook._id, isDeleted : false });
 
         findBook["reviewsData"] = findReview;
         
