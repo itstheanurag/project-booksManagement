@@ -66,12 +66,11 @@ const loginUser = async (req, res) => {
     
     let payload = {
       userId: findUser._id,
-      expiresIn : '30m',
       iat: Math.floor(Date.now())
     }
 
     let token = jwt.sign( payload, secretKey, {
-      exp : '30m'
+      expiresIn : '30m'
     });
 
     res.header("x-auth-key", token);
@@ -81,6 +80,7 @@ const loginUser = async (req, res) => {
       .send({ status: true, message: "login successful", data: token });
   } catch (err) {
     res.status(500).send({ status: false, err: err.msg });
+    console.log(err)
   }
 };
 

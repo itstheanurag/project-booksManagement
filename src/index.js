@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const route = require('./routes/route.js');
 const { default: mongoose } = require('mongoose');
 const app = express();
+require('dotenv').config()
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
