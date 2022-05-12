@@ -62,8 +62,16 @@ const loginUser = async (req, res) => {
     let verifyUser = await user.findOne({ email: email, password: password });
     if (!verifyUser) return res.status(400).send({status : false, message : "password are wrong"});
 
-    let token = jwt.sign({ userId: verifyUser._id }, secretKey, {
-      expiresIn: "2d",
+    // exp: Math.floor(Date.now() / 1000) + (60 * 30) this value can also be set inside paylod to let token expire in 30 min
+    
+    let payload = {
+      userId: findUser._id,
+      expiresIn : '30m',
+      iat: Math.floor(Date.now())
+    }
+
+    let token = jwt.sign( payload, secretKey, {
+      exp : '30m'
     });
 
     res.header("x-auth-key", token);

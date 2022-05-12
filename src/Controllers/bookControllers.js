@@ -116,7 +116,7 @@ const createBook = async (req, res) => {
             let datePattern = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/g;
             if (!releasedAt.match(datePattern)) {
                 return res.status(400).send({ status: false, message: "Date format is not valid" });
-            }
+            }  //'1998-10-24'
         } else {
             return res
                 .status(400)
@@ -187,7 +187,7 @@ const getBook = async (req, res) => {
                 title: 1,
                 excerpt: 1,
                 userId: 1,
-                catergory: 1,
+                category: 1,
                 releasedAt: 1,
                 reviews: 1,
             })
