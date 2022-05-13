@@ -18,16 +18,18 @@ const creatUser = async (req, res) => {
       return res.status(400).send({status : false, message : "This is not a valid name"})
     }
 
+    let checkPhone = await user.findOne({phone})
+    if (checkPhone) {
+        return res.status(400).send({status : false, message : "this phone number is already being used"})
+      }
+
     let finduser = await user.findOne({email});
 
     if (finduser) {
       return res.status(400).send({status : false, message : "this email is already being used"})
     }
 
-    let checkPhone = await user.findOne({phone})
-    if (checkPhone) {
-        return res.status(400).send({status : false, message : "this phone number is already being used"})
-      }
+   
 
     let createUser = await user.create(userData);
     return res.status(201).send({ status: true, message:"registration successfull" , data: createUser });

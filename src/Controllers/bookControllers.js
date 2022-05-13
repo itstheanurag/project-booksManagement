@@ -306,6 +306,10 @@ const updateBook = async (req, res) => {
                 .send({ status: false, message: "this book has been deleted by you" });
         }
 
+        if(checkBook.userId != userId){
+            return res.status(401).send({status : false, message : "This book doesn't belong to you, hence you can't update it"})
+        }
+
         if (userId) {
             let verifyuserId = mongoose.isValidObjectId(userId);
             if (!verifyuserId) {
@@ -326,10 +330,7 @@ const updateBook = async (req, res) => {
             return res.status(404).send({status : false, message : "a user with this id does not exists"})
         }
 
-        if(checkBook.userId != findUser._id){
-            return res.status(401).send({status : false, message : "This book doesn't belong to you, hence you can't update it"})
-        }
-
+      
         let data = req.body;
 
         let findBook = await book.findOneAndUpdate(
