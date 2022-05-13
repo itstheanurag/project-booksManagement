@@ -69,7 +69,6 @@ const createReview = async (req,res)=>{
         if(checkDetails){
             return res.status(400).send({status : false, message : 'a review with this details already exists, please update it'})
         }
-
        
         let reviewCreated = await reviewModel.create(data)
         
