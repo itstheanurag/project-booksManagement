@@ -181,7 +181,7 @@ const deleteReviewById = async(req,res)=>{
             return res.status(404).send({status : false, message : "This book has been deleted"})
         }
 
-        let findReview = await reviewModel.findOne({reviewId})
+        let findReview = await reviewModel.findOne({_id : reviewId})
 
         if(!findReview){
             return res.status(404).send({status : false, message : "A review with this id does not exists"})
