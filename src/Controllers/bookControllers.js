@@ -332,6 +332,40 @@ const updateBook = async (req, res) => {
 
       
         let data = req.body;
+        let {title, releasedAt, ISBN} = data
+
+        if(title){
+            let findTitle = await book.findOne({title : title})
+            if(findTitle){
+                return res.status(400).send({status : false, message : "This title is already in use, try another one"})
+            }
+        }
+
+        if (ISBN) {
+            let isbnPattern = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/g;
+
+            if (!ISBN.match(isbnPattern)) {
+                return res.status(400).send({
+                    status: false,
+                    message: "Please provide a valid isbn number",
+                });
+            }
+        }
+
+        let isUniqueISBN = await book.findOne({ ISBN: ISBN });
+
+        if (isUniqueISBN) {
+            return res
+                .status(400)
+                .send({ status: false, message: "This ISBN is already being used" });
+        }
+
+        if (releasedAt) {
+            let datePattern = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/g;
+            if (!releasedAt.match(datePattern)) {
+                return res.status(400).send({ status: false, message: "Date format is not valid" });
+            }
+        }
 
         let findBook = await book.findOneAndUpdate(
             { _id: bookId },
