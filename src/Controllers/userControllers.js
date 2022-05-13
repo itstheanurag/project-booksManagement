@@ -68,6 +68,7 @@ const loginUser = async (req, res) => {
 
     res.header("x-auth-key", token);
 
+    
     res
       .status(200)
       .send({ status: true, message: "login successful", data: token });
