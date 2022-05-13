@@ -3,12 +3,12 @@ const secretKey = "Gr34t mind5 think 4like"
 
 const authenticate = (req, res, next)=>{
     try{
-        let token = req.Headers['x-auth-key']
+        let token = req.headers['x-auth-key']
 
         if(!token){
-            return res.status(400).send({status : false, message : "Important header is missing"})
+            return res.status(400).send({status : false, message : "You are not Logged in Please logIn"})
         }
-
+      
         let decodeToken = jwt.verify(token, secretKey)
 
         if(!decodeToken){
@@ -21,10 +21,12 @@ const authenticate = (req, res, next)=>{
         return res.status(500).send({status : false, message : err.message})
     }
 }
+
 //=======================
+
 const authorization = (req, res, next)=>{
     try{
-        let token = req.Headers['x-auth-key']
+        let token = req.headers['x-auth-key']
 
         if(!token){
             return res.status(400).send({status : false, message : "Important header is missing"})

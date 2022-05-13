@@ -116,7 +116,7 @@ const createBook = async (req, res) => {
             let datePattern = /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/g;
             if (!releasedAt.match(datePattern)) {
                 return res.status(400).send({ status: false, message: "Date format is not valid" });
-            }
+            }  //'1998-10-24'
         } else {
             return res
                 .status(400)
@@ -187,7 +187,7 @@ const getBook = async (req, res) => {
                 title: 1,
                 excerpt: 1,
                 userId: 1,
-                catergory: 1,
+                category: 1,
                 releasedAt: 1,
                 reviews: 1,
             })
@@ -276,6 +276,8 @@ const bybookId = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         let bookId = req.params.bookId;
+        let userId =  req.query.userId
+
         if (bookId) {
             let verifyBookId = mongoose.isValidObjectId(bookId);
             if (!verifyBookId) {
@@ -297,14 +299,38 @@ const updateBook = async (req, res) => {
                 .status(404)
                 .send({ status: false, message: "No book with this Id exists" });
         }
-
-        
+     
         if (checkBook.isDeleted) {
             return res
                 .status(404)
                 .send({ status: false, message: "this book has been deleted by you" });
         }
 
+        if(checkBook.userId != userId){
+            return res.status(401).send({status : false, message : "This book doesn't belong to you, hence you can't update it"})
+        }
+
+        if (userId) {
+            let verifyuserId = mongoose.isValidObjectId(userId);
+            if (!verifyuserId) {
+                return res
+                    .status(400)
+                    .send({ status: false, message: "this is not a valid authorId " });
+            }
+        } else {
+            return res.status(400).send({
+                status: false,
+                message: "author Id must be present in order to search it",
+            });
+        }
+
+        let findUser = await user.findOne({_id : userId})
+
+        if(!findUser){
+            return res.status(404).send({status : false, message : "a user with this id does not exists"})
+        }
+
+      
         let data = req.body;
 
         let findBook = await book.findOneAndUpdate(
@@ -387,6 +413,9 @@ const deleteById = async (req, res) => {
         );
 
         if (deleteBook) {
+            
+        //await review.updateMany({bookId : req.params.bookId}, {$set :{isDeleted : true,  deletedAt : Date.now()}}, {new : true, upsert : true})
+
             return res.status(400).send({
                 status: false,
                 message: "Your book has been deleted",
