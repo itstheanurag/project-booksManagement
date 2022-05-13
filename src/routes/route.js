@@ -16,9 +16,9 @@ router.get("/books/:bookId", authenticate, bybookId);
 router.put("/books/:bookId", authorization, updateBook);
 router.delete("/books/:bookId", authorization, deleteById);
 //================================
-router.post("/books/:bookId/review", authenticate, createReview);
-router.put("/books/:bookId/review/:reviewId",authenticate, updateReview);
-router.delete("/books/:bookId/review/:reviewId", authenticate, deleteReviewById);
+router.post("/books/:bookId/review",  createReview);
+router.put("/books/:bookId/review/:reviewId", updateReview);
+router.delete("/books/:bookId/review/:reviewId", deleteReviewById);
 
 
 
