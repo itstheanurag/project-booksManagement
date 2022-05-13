@@ -34,10 +34,13 @@ const createReview = async (req,res)=>{
         if(!(rating <= 5 && rating >= 1)){
             return res.status(400).send({status : false, message : 'please provide a valid rating'})
         }
-
-        if(reviewedBy.trim().length === 0){
-            return res.status(400).send({status : false, message : 'reviewers name can not be empty'})
-        }   
+        
+        if(reviewedBy){
+            if(reviewedBy.trim().length === 0){
+                return res.status(400).send({status : false, message : 'reviewers name can not be empty'})
+            }  
+        }
+         
 
         if(!review){
             return res.status(400).send({status : false, message : 'review is a required field'})
@@ -101,15 +104,6 @@ const updateReview = async(req,res)=>{
            return res.status(400).send({status : false, message : 'this is not a valid book Id'})
         }
 
-        if(!reviewId){
-            return res.status(400).send({status : false, message : 'reviewId is not present'})
-        }
-
-        let validatereviewId = mongoose.isValidObjectId(reviewId)
-        if(!validatereviewId){
-           return res.status(400).send({status : false, message : 'this is not a valid review Id'})
-        }
-        
         let findBook = await book.find({bookId})
 
         if(!findBook){
@@ -119,6 +113,16 @@ const updateReview = async(req,res)=>{
         if(findBook.isDeleted){
             return res.status(404).send({status : false, message : "This book has been deleted"})
         }
+
+        if(!reviewId){
+            return res.status(400).send({status : false, message : 'reviewId is not present'})
+        }
+
+        let validatereviewId = mongoose.isValidObjectId(reviewId)
+        if(!validatereviewId){
+           return res.status(400).send({status : false, message : 'this is not a valid review Id'})
+        }
+        
 
         let findReview = await reviewModel.findOne({reviewId})
 
