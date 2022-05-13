@@ -35,10 +35,6 @@ const createReview = async (req,res)=>{
             return res.status(400).send({status : false, message : 'please provide a valid rating'})
         }
 
-        if(!reviewedBy){
-            return res.status(400).send({status : false, message : 'reviewers Name is a required field'})
-        }
-
         if(reviewedBy.trim().length === 0){
             return res.status(400).send({status : false, message : 'reviewers name can not be empty'})
         }   

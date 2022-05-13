@@ -10,7 +10,7 @@ const { validateAuthor, authorValidated } = require('../validations/userValidati
 router.post("/register", validateAuthor, authorValidated, creatUser);
 router.post("/login", loginUser);
 //=========================
-router.post("/books",authorization, createBook);
+router.post("/books", authorization, createBook);
 router.get("/books", authenticate, getBook);
 router.get("/books/:bookId", authenticate, bybookId);
 router.put("/books/:bookId", authorization, updateBook);
