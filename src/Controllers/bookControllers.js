@@ -276,6 +276,8 @@ const bybookId = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         let bookId = req.params.bookId;
+        let userId =  req.query.userId
+
         if (bookId) {
             let verifyBookId = mongoose.isValidObjectId(bookId);
             if (!verifyBookId) {
@@ -302,6 +304,24 @@ const updateBook = async (req, res) => {
             return res
                 .status(404)
                 .send({ status: false, message: "this book has been deleted by you" });
+        }
+
+        if (userId) {
+            let verifyuserId = mongoose.isValidObjectId(userId);
+            if (!verifyuserId) {
+                return res
+                    .status(400)
+                    .send({ status: false, message: "this is not a valid authorId " });
+            }
+        } else {
+            return res.status(400).send({
+                status: false,
+                message: "author Id must be present in order to search it",
+            });
+        }
+
+        if(checkBook.userId != userId){
+            return res.status(401).send({status : false, message : "This book doesn't belong to you, hence you can't update it"})
         }
 
         let data = req.body;
