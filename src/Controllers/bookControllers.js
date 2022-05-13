@@ -320,7 +320,13 @@ const updateBook = async (req, res) => {
             });
         }
 
-        if(checkBook.userId != userId){
+        let findUser = await user.findOne({_id : userId})
+
+        if(!findUser){
+            return res.status(404).send({status : false, message : "a user with this id does not exists"})
+        }
+
+        if(checkBook.userId != findUser._id){
             return res.status(401).send({status : false, message : "This book doesn't belong to you, hence you can't update it"})
         }
 
