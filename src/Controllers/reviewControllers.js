@@ -133,7 +133,7 @@ const updateReview = async(req,res)=>{
             return res.status(404).send({status : false, message : "This review has been deleted"})
         }
        
-        
+
         if(findReview.bookId != bookId){
             return res.status(404).send({status : false, message : "This review is not of this book"})
         }
@@ -176,7 +176,7 @@ const deleteReviewById = async(req,res)=>{
            return res.status(400).send({status : false, message : 'this is not a valid review Id'})
         }
         
-        let findBook = await book.find({bookId})
+        let findBook = await book.findOne({_id : bookId})
 
         if(!findBook){
             return res.status(404).send({status : false, message : "A book with this id does not exists"})
@@ -194,6 +194,10 @@ const deleteReviewById = async(req,res)=>{
 
         if(findReview.isDeleted){
             return res.status(404).send({status : false, message : "This review is already deleted"})
+        }
+
+        if(findReview.bookId != bookId){
+            return res.status(404).send({status : false, message : "This review is not of this book"})
         }
 
         let deletetheReview = await reviewModel.findOneAndUpdate({_id : reviewId}, {$set : {isDeleted : true}, deletedAt : Date.now()}, {new : true, upsert : true})
