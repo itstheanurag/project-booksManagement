@@ -413,7 +413,7 @@ const deleteById = async (req, res) => {
 
         if (deleteBook) {
             
-            await review.updateMany({bookId : req.params.bookId}, {$set :{isDeleted : true,  deletedAt : Date.now()}}, {new : true, upsert : true})
+        //await review.updateMany({bookId : req.params.bookId}, {$set :{isDeleted : true,  deletedAt : Date.now()}}, {new : true, upsert : true})
 
             return res.status(400).send({
                 status: false,
