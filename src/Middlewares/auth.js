@@ -40,6 +40,10 @@ const authorization = (req, res, next)=>{
 
         let userId = req.body.userId || req.query.userId || req.params.userId
 
+        if(!userId){
+            return res.status(400).send({status : false, message : "userId must be present to do this action"})
+        }
+
         if(userId != decodeToken.userId){
             return res.status(401).send({status : false, message : "you are not authorized to do this"})
         }
