@@ -317,12 +317,7 @@ const updateBook = async (req, res) => {
                     .status(400)
                     .send({ status: false, message: "this is not a valid authorId " });
             }
-        } else {
-            return res.status(400).send({
-                status: false,
-                message: "author Id must be present in order to search it",
-            });
-        }
+        } 
 
         let findUser = await user.findOne({_id : userId})
 

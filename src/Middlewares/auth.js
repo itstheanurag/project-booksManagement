@@ -29,7 +29,7 @@ const authorization = (req, res, next)=>{
         let token = req.headers['x-auth-key']
 
         if(!token){
-            return res.status(400).send({status : false, message : "Important header is missing"})
+            return res.status(400).send({status : false, message : "You are not Logged in Please logIn"})
         }
 
         let decodeToken = jwt.verify(token, secretKey)
