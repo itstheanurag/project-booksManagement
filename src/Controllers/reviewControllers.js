@@ -73,10 +73,15 @@ const createReview = async (req,res)=>{
         
         if(reviewCreated){
            
-            await book.findOneAndUpdate({_id : bookId}, {$inc : {reviews : 1}}, {new : true, upsert : true})   
+          let updatedBook =  await book.findOneAndUpdate({_id : bookId}, {$inc : {reviews : 1}}, {new : true, upsert : true}).lean()   
+
+          updatedBook['reviewData'] = reviewCreated
+
+            return res.status(201).send({status : true, message : "Review published", data : updatedBook })
         }
 
-        return res.status(201).send({status : true, message : "Review published", data : reviewCreated })
+
+
      
     }
     catch(err){
@@ -102,7 +107,7 @@ const updateReview = async(req,res)=>{
            return res.status(400).send({status : false, message : 'this is not a valid book Id'})
         }
 
-        let findBook = await book.findOne({_id :bookId})
+        let findBook = await book.findOne({_id :bookId}).lean()
 
         if(!findBook){
             return res.status(404).send({status : false, message : "A book with this id does not exists"})
@@ -137,7 +142,9 @@ const updateReview = async(req,res)=>{
         
         let updateReview = await reviewModel.findOneAndUpdate({_id : reviewId}, {$set :{...data}}, {new : true, upsert : true})
 
-        if(updateReview) return res.status(200).send({status : false, message : "review updated successfully", data : updateReview})
+        findBook["reviewData"] = updateReview
+
+        if(updateReview) return res.status(200).send({status : false, message : "review updated successfully", data : findBook})
 
 
     }
