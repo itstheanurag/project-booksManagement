@@ -29,7 +29,7 @@ const authorization = (req, res, next)=>{
         let token = req.headers['x-auth-key']
 
         if(!token){
-            return res.status(400).send({status : false, message : "Important header is missing"})
+            return res.status(400).send({status : false, message : "You are not Logged in Please logIn"})
         }
 
         let decodeToken = jwt.verify(token, secretKey)
@@ -39,6 +39,10 @@ const authorization = (req, res, next)=>{
         }
 
         let userId = req.body.userId || req.query.userId || req.params.userId
+
+        if(!userId){
+            return res.status(400).send({status : false, message : "userId must be present to do this action"})
+        }
 
         if(userId != decodeToken.userId){
             return res.status(401).send({status : false, message : "you are not authorized to do this"})

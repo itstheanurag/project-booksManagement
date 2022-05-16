@@ -29,8 +29,6 @@ const creatUser = async (req, res) => {
       return res.status(400).send({status : false, message : "this email is already being used"})
     }
 
-   
-
     let createUser = await user.create(userData);
     return res.status(201).send({ status: true, message:"registration successfull" , data: createUser });
   } catch (err) {

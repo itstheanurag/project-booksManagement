@@ -20,11 +20,11 @@ const createReview = async (req,res)=>{
 
          let findBook =  await book.findOne({bookId})
          if(!findBook){
-            return res.status(400).send({status : false, message : 'no books with this Books id'})
+            return res.status(404).send({status : false, message : 'no books with this Books id'})
          }
 
          if(findBook.isDeleted){
-            return res.status(400).send({status : false, message : 'This book has been deleted'})
+            return res.status(404).send({status : false, message : 'This book has been deleted'})
          }
 
          if(!rating){
@@ -41,7 +41,6 @@ const createReview = async (req,res)=>{
             }  
         }
          
-
         if(!review){
             return res.status(400).send({status : false, message : 'review is a required field'})
         }
@@ -132,12 +131,10 @@ const updateReview = async(req,res)=>{
             return res.status(404).send({status : false, message : "This review has been deleted"})
         }
        
-
         if(findReview.bookId != bookId){
             return res.status(404).send({status : false, message : "This review is not of this book"})
         }
         
-
         let updateReview = await reviewModel.findOneAndUpdate({_id : reviewId}, {$set :{...data}}, {new : true, upsert : true})
 
         if(updateReview) return res.status(200).send({status : false, message : "review updated successfully", data : updateReview})
